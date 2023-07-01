@@ -1,10 +1,13 @@
+// eslint-disable-next-line no-unused-vars
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { deleteUser } from "../action/UserAction";
+import { deleteUser, getUserID } from "../action/UserAction";
 
 class TableStudents extends Component {
   renderStudent = () => {
-    const { mangSinhVien, deleteStudent } = this.props;
+    // eslint-disable-next-line react/prop-types
+    const { mangSinhVien, deleteStudent, getStudentID } = this.props;
+    // eslint-disable-next-line react/prop-types
     return mangSinhVien.map((student, index) => {
       return (
         <tr key={index}>
@@ -21,7 +24,11 @@ class TableStudents extends Component {
             >
               Xóa
             </button>
-            <button className="btn btn-warning">Sửa</button>
+            <button
+             onClick={() => {
+              getStudentID(student.maSV);
+             }}
+             className="btn btn-warning">Sửa</button>
           </td>
         </tr>
       );
@@ -57,6 +64,10 @@ const mapDispatchToProps = (dispatch) => {
     deleteStudent: (index) => {
       dispatch(deleteUser(index));
     },
+    getStudentID: (maSV) => {
+      dispatch(getUserID(maSV));
+    }
   };
 };
+// eslint-disable-next-line react-refresh/only-export-components
 export default connect(mapStateToProps, mapDispatchToProps)(TableStudents);
