@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { addUser } from "../action/UserAction";
+import { addUser, updateIsUpdateUser, updateUser } from "../action/UserAction";
 
 class FormStudent extends Component {
   state = {
@@ -19,6 +19,7 @@ class FormStudent extends Component {
   };
 
   handleOnChange = (e) => {
+    // console.log("get e: ", e)
     let { name, value, type, pattern } = e.target;
     let errorMessage = "";
     //kiểm tra rỗng
@@ -97,13 +98,30 @@ class FormStudent extends Component {
     });
   };
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-    this.props.addStudent(this.state.values);
-  };
+  // handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   this.props.addStudent(this.state.values);
+  // };
   render() {
+    // eslint-disable-next-line no-unused-vars
     let { editingProduct, values, errors } = this.state;
+    
+    // eslint-disable-next-line react/prop-types
+    let {sinhVien, isUpdateStudent, isDisabledInput} = this.props;
+    let isDisabled = isDisabledInput;
+    if(isUpdateStudent){
+      this.setState({
+        ...this.state,
+        values: sinhVien
+      })
+      isDisabled = true
+      // eslint-disable-next-line react/prop-types
+      this.props.updateIsUpdateStudent(false, false)
+      
+    }
     let { maSV, hoTen, email, soDT } = values;
+    
+    
     return (
       <div className="container">
         <div className="card text-left p-0">
@@ -111,7 +129,7 @@ class FormStudent extends Component {
             Thông tin sinh viên
           </div>
           <div className="card-body">
-            <form onSubmit={this.handleSubmit}>
+            <form>
               <div className="row">
                 <div className="form-group col-6">
                   <span>Mã SV</span>
@@ -121,6 +139,7 @@ class FormStudent extends Component {
                     className="form-control"
                     name="maSV"
                     value={maSV}
+                    disabled={isDisabled}
                     onChange={this.handleOnChange}
                     onBlur={this.handleOnBlur}
                   />
@@ -168,8 +187,35 @@ class FormStudent extends Component {
               </div>
               <div className="row">
                 <div className="col-md-12 text-left">
-                  <button type="submit" className="btn btn-success">
+                  <button onClick={() => {
+                    this.props.addStudent(this.state.values)
+                    this.setState({
+                      ...this.state,
+                      values: {
+                        maSV: "",
+                        hoTen: "",
+                        email: "",
+                        soDT: "",
+                      }
+                    })
+                  }} type="button" className="btn btn-success">
                     Thêm sinh viên
+                  </button>
+                  <button onClick={() => {
+                    this.props.updateStudent(this.state.values)
+                    this.setState({
+                      ...this.state,
+                      values: {
+                        maSV: "",
+                        hoTen: "",
+                        email: "",
+                        soDT: "",
+                      }
+                    })
+                  }}
+                  
+                  type="button" className="btn btn-success" style={{marginLeft: "5px"}}>
+                    Sửa sinh viên
                   </button>
                 </div>
               </div>
@@ -180,11 +226,27 @@ class FormStudent extends Component {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    edittingStudentID: state.UserReducer.edittingStudentID,
+    sinhVien: state.UserReducer.student,
+    isUpdateStudent: state.UserReducer.isUpdateStudent,
+    isDisabledInput: state.UserReducer.isDisabledInput
+  };
+};
 const mapDispatchToProps = (dispatch) => {
   return {
     addStudent: (student) => {
       dispatch(addUser(student));
     },
+    updateIsUpdateStudent: (boolean) => {
+      dispatch(updateIsUpdateUser(boolean))
+    },
+    updateStudent: (studentUpdated) => {
+      dispatch(updateUser(studentUpdated));
+    }
   };
 };
-export default connect(null, mapDispatchToProps)(FormStudent);
+// eslint-disable-next-line react-refresh/only-export-components
+export default connect(mapStateToProps, mapDispatchToProps)(FormStudent);

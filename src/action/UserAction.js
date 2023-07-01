@@ -3,6 +3,8 @@ import {
   EDIT_USER,
   DELETE_USER,
   UPDATE_USER,
+  GET_USER_ID,
+  UPDATE_IS_UPDATE_USER,
 } from "../constants/UserType";
 
 export const addUser = (student) => {
@@ -17,12 +19,12 @@ export const editUser = (maSV) => {
     payload: maSV,
   };
 };
-export const updateUser = (maSV, newUser) => {
+export const updateUser = (userUpdate, isDisabledInput) => {
   return {
     type: UPDATE_USER,
     payload: {
-      maSV,
-      newUser,
+      userUpdate,
+      isDisabledInput,
     },
   };
 };
@@ -32,3 +34,15 @@ export const deleteUser = (index) => {
     index,
   };
 };
+export const getUserID = (maSV) => {
+  return {
+    type: GET_USER_ID,
+    payload: {maSV}
+  }
+}
+export const updateIsUpdateUser = (boolean, isDisabledInput) => {
+  return {
+    type: UPDATE_IS_UPDATE_USER,
+    payload: {boolean, isDisabledInput}
+  }
+}
